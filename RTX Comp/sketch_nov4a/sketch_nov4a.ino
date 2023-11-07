@@ -1,5 +1,5 @@
 #include <Servo.h>
-
+/*
 Servo myservo;
 const int steeringPin = 2;
 const int drivePin = 3;
@@ -10,20 +10,11 @@ void setup() {
   pinMode(drivePin, OUTPUT);
 }
 
-void loop() {
-  //wheel speed
-  while (Serial.available() == 0) {
-  }
-
-  float wheelSpeed = Serial.parseFloat();
-  
-  //input 2
-}
+*/
 
 
-/*
 int led = 10;
-int input = -1;
+int input = 1;
 int button = 1;
 
 void setup() {
@@ -53,4 +44,3 @@ void loop() {
   digitalWrite(led,HIGH);
   delay(pulse);
 }
-*/
