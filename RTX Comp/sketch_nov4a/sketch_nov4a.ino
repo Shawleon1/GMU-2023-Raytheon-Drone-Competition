@@ -13,34 +13,35 @@ void setup() {
 */
 
 
-int led = 10;
-int input = 1;
+int led = 13;
+float input = -1;
 int button = 1;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(led, OUTPUT);
-  pinMode(button, INPUT);
+  pinMode(button, INPUT;
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   int pulse;
 
-  if(input == -1){
+  if(input < 0 && input >= -1){
     pulse = 1000;
+    pulse += 500 * (input * -1);
+
   }
 
-  if(input == 0){
+  if(input >= 0 && input <= 1){
     pulse = 1500;
-  }
-
-  if(input == 1){
-    pulse = 2000;
+    pulse += 500 * (input * -1);
   }
 
   digitalWrite(led, LOW);
   delay(pulse);
   digitalWrite(led,HIGH);
   delay(pulse);
+
 }
