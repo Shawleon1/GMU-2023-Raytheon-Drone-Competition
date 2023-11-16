@@ -13,14 +13,14 @@ void setup() {
 */
 
 
-int led = 13;
-float input = -1;
+int led = 9;
+float input = 1;
 int button = 1;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(led, OUTPUT);
-  pinMode(button, INPUT;
+  pinMode(button, INPUT);
 
 }
 
