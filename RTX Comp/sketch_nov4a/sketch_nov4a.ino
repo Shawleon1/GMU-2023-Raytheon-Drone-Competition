@@ -11,15 +11,18 @@ void setup() {
 }
 
 */
+static const int THROTTLE_IN = 5;
+static const int STEERING_IN = 6;
 
+static const int THROTTLE_OUT = 9;
+static const int STEERING_OUT = 10;
 
-int led = 9;
 float input = 1;
 int button = 1;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(led, OUTPUT);
+  pinMode(THROTTLE_OUT, OUTPUT);
   pinMode(button, INPUT);
 
 }
@@ -39,9 +42,9 @@ void loop() {
     pulse += 500 * (input * -1);
   }
 
-  digitalWrite(led, LOW);
+  digitalWrite(THROTTLE_OUT, LOW);
   delay(pulse);
-  digitalWrite(led,HIGH);
+  digitalWrite(THROTTLE_OUT,HIGH);
   delay(pulse);
 
 }
