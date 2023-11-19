@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # license removed for brevity
 import rospy
-from std_msgs.msg import Float32Array
+from std_msgs.msg import Float32MultiArray
 
 def talker():
-    pub = rospy.Publisher("/cmd_vel1", Float32Array, queue_size=10)
+    pub = rospy.Publisher("/cmd_vel1", Float32MultiArray, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
