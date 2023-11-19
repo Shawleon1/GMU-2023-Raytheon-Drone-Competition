@@ -7,17 +7,20 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <std_msgs/Int16MultiArray.h>
 
+//global variables of microsecond pulses
 ros::NodeHandle nodeHandle;
 const int minSteering = 1000;
 const int maxSteering = 2000;
 const int brk_delay = 500;
 
+//output pins on arduino
 static const int STEERING_OUT = 2;
 static const int THROTTLE_OUT = 3;
 
-
+//inputs from ros- 0 is steering 1 is throttle, rest are unused
 int servo_values[6];
 
+//variables for accounting
 unsigned long last_msg_time = 0;
 unsigned long brk_timer = 0;
 bool prev_dir = 0;
@@ -25,14 +28,16 @@ bool prev_dir = 0;
 float Throttle_cmd;
 float smt_Throttle;
 
+//defining servos
 Servo steeringServo;
 Servo throttleServo;
 
-
+//maps a float from -1 to 1 to 1000 to 2000
 float fmap(float toMap, float in_min, float in_max, float out_min, float out_max) {
   return (toMap - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+//failsafe for handling sudden forwards to reverse
 float fw_to_rev(float th){
   if (brk_timer == 0){
     brk_timer = millis();
@@ -55,6 +60,7 @@ float fw_to_rev(float th){
   }
 }
 
+//failsafe for reverse to forwards
 float rev_to_fw(){
   if (brk_timer == 0){
     brk_timer = millis();
@@ -71,6 +77,7 @@ float rev_to_fw(){
 
 }
 
+//main method for reading from ros
 void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   //timestamp the  last ros message
   last_msg_time = millis();
@@ -122,6 +129,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
 
 }
 
+//failsafe for if we have no input- puts throttle to 0 and steering to a neutral place
 void failSafeActive(){
   throttleServo.writeMicroseconds(1500);
   steeringServo.writeMicroseconds(1850);
@@ -146,6 +154,8 @@ void setup() {
   //ROS initialization
   nodeHandle.initNode();
   nodeHandle.subscribe(driveSubscriber);
+
+  //linking servos to outputs
   steeringServo.attach(STEERING_OUT);
   throttleServo.attach(THROTTLE_OUT);
   Serial.println("Initialization Finished");
@@ -154,14 +164,19 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long cur_millis = millis();
+
+  //this fires if we have no input for an entire second
   if((millis() - last_msg_time) > 1000){
     failSafeActive();
   }
 
+  //writes servo vals to servos
   else{
     steeringServo.writeMicroseconds(servo_values[0]);
     throttleServo.writeMicroseconds(servo_values[1]);
   }
+
+  //this method tells drivesubscriber to check on ros
   nodeHandle.spinOnce();
   delayMicroseconds(100);
 }
