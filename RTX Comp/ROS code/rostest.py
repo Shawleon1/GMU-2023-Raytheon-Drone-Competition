@@ -4,14 +4,15 @@ import rospy
 from std_msgs.msg import Float32MultiArray
 from sensor_msgs.msg import Joy
 
-throttle = 0
 steering = 0
+throttle = 0
 
 def joy_callback(msg):
+    global steering, throttle
     steering = msg.axes[0]
     throttle = msg.axes[4]
 
-if __name__ == '__main__':
+if name == 'main':
     try:
         servo_values = Float32MultiArray(data=[-1.0, 1.0, 0.0, 0.0, 0.0, 0.0])
 
