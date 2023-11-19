@@ -2,12 +2,16 @@
 
 import rospy
 from std_msgs.msg import Float32MultiArray
-from sensor.msg import Joy
+from sensor_msgs.msg import Joy
+
+throttle = 0
+steering = 0
 
 def joy_callback(msg):
-    rospy.loginfo(msg)
+    steering = msg.axes[0]
+    throttle = msg.axes[4]
 
-if name == 'main':
+if __name__ == '__main__':
     try:
         servo_values = Float32MultiArray(data=[-1.0, 1.0, 0.0, 0.0, 0.0, 0.0])
 
@@ -19,8 +23,8 @@ if name == 'main':
         rospy.loginfo("ros_test is started")
         rate = rospy.Rate(10) # 10hz
         while not rospy.is_shutdown():
-            servo_values.data[0] = Joy.axes[0]
-            servo_values.data[1] = Joy.axes[4]
+            servo_values.data[0] = steering
+            servo_values.data[1] = throttle
             rospy.loginfo(servo_values)
             pub.publish(servo_values)
             rate.sleep()
