@@ -12,17 +12,22 @@ const int minSteering = 1000;
 const int maxSteering = 2000;
 const int brk_delay = 500;
 
+static const int STEERING_OUT = 2;
+static const int THROTTLE_OUT = 3;
+
 
 int servo_values[6];
 
 unsigned long last_msg_time = 0;
-unsigned long brk_timer;
-bool prev_dir;
+unsigned long brk_timer = 0;
+bool prev_dir = 0;
 
 float Throttle_cmd;
 float smt_Throttle;
 
 Servo steeringServo;
+Servo throttleServo;
+
 
 float fmap(float toMap, float in_min, float in_max, float out_min, float out_max) {
   return (toMap - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -79,6 +84,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   if (steer_cmd > maxSteering) {
     steer_cmd = maxSteering ;
   }
+  
   //write Servo output for steering
   servo_values[0] = steer_cmd;
 
@@ -87,6 +93,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     Throttle_cmd = 0;
     smt_Throttle = 0;
   }
+
   // ESC forward continue
   if ((control_msg.data[1] >= 0) && (prev_dir == 0)){
     Throttle_cmd = control_msg.data[1];
@@ -111,31 +118,14 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     smt_Throttle = Throttle_cmd;
   }
 
+  servo_values[1] = Throttle_cmd;
+
 }
 
-/*
-const int steeringPin = 2;
-const int drivePin = 3;
-
-
-void setup() {
-  pinMode(steeringPin, OUTPUT);
-  pinMode(drivePin, OUTPUT);
+void failSafeActive(){
+  throttleServo.writeMicroseconds(1500);
+  steeringServo.writeMicroseconds(1850);
 }
-
-*/
-// static const int THROTTLE_IN = 5;
-// static const int STEERING_IN = 2;
-
-// static const int THROTTLE_OUT = 9;
-static const int STEERING_OUT = 2;
-float servoval = 500.0;
-static const int NUM_CHANNELS = 1;
-// static const int PWM_IN_DISCONNECT = 700;
-// static const int PWM_OUT_DISCONNECT = 1500;
-
-// // float channel[NUM_CHANNELS];
-// int button = 1;
 
 //Control message subscriber
 ros::Subscriber<std_msgs::Float32MultiArray> driveSubscriber("/cmd_vel1", &driveCallback);
@@ -151,27 +141,28 @@ ros::Publisher optiFlow_data("optiFlow_data", &optiFlow);
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(57600);
+
+  //ROS initialization
+  nodeHandle.initNode();
+  nodeHandle.subscribe(driveSubscriber);
   steeringServo.attach(STEERING_OUT);
-  Serial.begin(9600);
+  throttleServo.attach(THROTTLE_OUT);
+  Serial.println("Initialization Finished");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  while (Serial.available()) {
-    servoval = Serial.parseFloat();
-    while(Serial.read() == '\n');
-    Serial.print("input value");
-    Serial.println(servoval);
-    delay(500);
-    servoval = servoval * 1000;
-    Serial.print("multiply value");
-    Serial.println(servoval);
-    delay(500);
-    servoval = servoval + 1000;
+  unsigned long cur_millis = millis();
+  if((millis() - last_msg_time) > 1000){
+    failSafeActive();
   }
-  Serial.println(servoval);
 
-  steeringServo.writeMicroseconds(servoval);
-  delay(500);
+  else{
+    steeringServo.writeMicroseconds(servo_values[0]);
+    throttleServo.writeMicroseconds(servo_values[1]);
+  }
+  nodeHandle.spinOnce();
+  delayMicroseconds(100);
 }
 
