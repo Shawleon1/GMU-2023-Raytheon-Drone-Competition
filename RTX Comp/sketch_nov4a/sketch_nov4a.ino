@@ -85,7 +85,6 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   //Handle for steering and throttle command
   //Map steering and throttle command to servo output
   float steer_cmd = fmap(control_msg.data[0], -1.0, 1.0, minSteering, maxSteering);
-  float throttle_cmd = fmap(control_msg.data[1], -1.0, 1.0, minSteering, maxSteering);
   
   if (steer_cmd < minSteering) {
     steer_cmd = minSteering;
@@ -127,7 +126,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     smt_Throttle = throttle_cmd;
   }
 
-  servo_values[1] = throttle_cmd;
+  servo_values[1] = fmap(throttle_cmd, -1.0, 1.0, minSteering, maxSteering);
 
 }
 
