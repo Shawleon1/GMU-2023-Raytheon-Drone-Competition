@@ -26,7 +26,7 @@ unsigned long brk_timer = 0;
 bool prev_dir = 0;
 
 float throttle_cmd;
-float smt_Throttle;
+//float smt_Throttle;
 
 //defining servos
 Servo steeringServo;
@@ -99,31 +99,31 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   //Handle for throttle command
   if ((control_msg.data[1] == 0)){
     throttle_cmd = 0;
-    smt_Throttle = 0;
+    //smt_Throttle = 0;
   }
 
   // ESC forward continue
   if ((control_msg.data[1] >= 0) && (prev_dir == 0)){
     throttle_cmd = control_msg.data[1];
-    smt_Throttle = smt_Throttle + 0.2 * (throttle_cmd - smt_Throttle);
+    //smt_Throttle = smt_Throttle + 0.2 * (throttle_cmd - smt_Throttle);
   }
   
   //ESC reverse continue 
   if ((control_msg.data[1] < 0 ) && (prev_dir == 1)){
     throttle_cmd = control_msg.data[1];
-    smt_Throttle = smt_Throttle + 0.2 * (throttle_cmd - smt_Throttle);
+    //smt_Throttle = smt_Throttle + 0.2 * (throttle_cmd - smt_Throttle);
   }
 
   //From forward to rev
   if ((control_msg.data[1] < 0 ) && (prev_dir == 0)){
     throttle_cmd = fw_to_rev(control_msg.data[1]);
-    smt_Throttle = throttle_cmd;
+    //smt_Throttle = throttle_cmd;
   }
 
   //From rev to forward
   if ((control_msg.data[1] > 0 ) && (prev_dir == 1)){ 
     throttle_cmd = rev_to_fw();
-    smt_Throttle = throttle_cmd;
+    //smt_Throttle = throttle_cmd;
   }
 
   servo_values[1] = fmap(throttle_cmd, -1.0, 1.0, minSteering, maxSteering);
