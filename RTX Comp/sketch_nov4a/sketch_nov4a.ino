@@ -82,8 +82,8 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   //timestamp the  last ros message
   last_msg_time = millis();
 
-  //Handle for steering command
-  //Map steering command to servo output
+  //Handle for steering and throttle command
+  //Map steering and throttle command to servo output
   float steer_cmd = fmap(control_msg.data[0], -1.0, 1.0, minSteering, maxSteering);
   float throttle_cmd = fmap(control_msg.data[1], -1.0, 1.0, minSteering, maxSteering);
   
