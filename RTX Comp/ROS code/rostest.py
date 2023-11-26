@@ -12,9 +12,9 @@ def joy_callback(msg):
     global steering, throttle, emergency_stop
     steering = msg.axes[0]
     throttle = msg.axes[4]
-    emergency_stop = msg.buttons[2]
+    emergency_stop = msg.buttons[9]
 
-if name == 'main':
+if __name__ == '__main__':
     try:
         servo_values = Float32MultiArray(data=[-1.0, 1.0, 0.0, 0.0, 0.0, 0.0])
 
