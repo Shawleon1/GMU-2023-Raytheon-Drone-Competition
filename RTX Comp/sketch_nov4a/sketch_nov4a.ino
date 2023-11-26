@@ -25,6 +25,7 @@ unsigned long last_msg_time = 0;
 unsigned long brk_timer = 0;
 bool prev_dir = 0;
 bool emergency_stop = 0;
+unsigned long last_emergency_stop = 0;
 
 float throttle_cmd;
 //float smt_Throttle;
@@ -90,9 +91,10 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   last_msg_time = millis();
 
   //if emergency stop is triggered
-  if(control_msg.data[2] == 1.0)
+  if(control_msg.data[2] == 1.0 && millis() >= (1000 + last_emergency_stop))
   {
     emergency_stop = !emergency_stop;
+    last_emergency_stop = millis();
     //flip to 1 for water sensor shut off
   }
 
