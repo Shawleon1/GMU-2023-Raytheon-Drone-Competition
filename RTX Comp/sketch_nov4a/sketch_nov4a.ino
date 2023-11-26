@@ -93,6 +93,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   if(control_msg.data[2] == 1.0)
   {
     emergency_stop = !emergency_stop;
+    //flip to 1 for water sensor shut off
   }
 
   //Handle for steering and throttle command

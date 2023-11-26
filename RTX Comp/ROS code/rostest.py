@@ -6,11 +6,13 @@ from sensor_msgs.msg import Joy
 
 steering = 0
 throttle = 0
+emergency_stop = 0
 
 def joy_callback(msg):
-    global steering, throttle
+    global steering, throttle, emergency_stop
     steering = msg.axes[0]
     throttle = msg.axes[4]
+    emergency_stop = msg.buttons[2]
 
 if name == 'main':
     try:
@@ -26,6 +28,7 @@ if name == 'main':
         while not rospy.is_shutdown():
             servo_values.data[0] = steering
             servo_values.data[1] = throttle
+            servo_values.data[2] = emergency_stop
             rospy.loginfo(servo_values)
             pub.publish(servo_values)
             rate.sleep()
