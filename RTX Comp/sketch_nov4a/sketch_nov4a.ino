@@ -95,15 +95,6 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     emergency_stop = !emergency_stop;
   }
 
-  //if emergency stop freeze the robot
-  if(emergency_stop)
-  {
-    failSafeActive();
-    servo_values[0] = 1850;
-    servo_values[1] = 1500;
-    return;
-  }
-
   //Handle for steering and throttle command
   //Map steering and throttle command to servo output
   float steer_cmd = fmap(control_msg.data[0], -1.0, 1.0, minSteering, maxSteering);
@@ -186,7 +177,9 @@ void loop() {
   if((millis() - last_msg_time) > 1000){
     failSafeActive();
   }
-
+  else if(emergency_stop){
+    failSafeActive();
+  }
   //writes servo vals to servos
   else{
     steeringServo.writeMicroseconds(servo_values[0]);
