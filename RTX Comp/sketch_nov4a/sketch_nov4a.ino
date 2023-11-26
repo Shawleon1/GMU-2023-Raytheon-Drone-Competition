@@ -24,6 +24,7 @@ int servo_values[6];
 unsigned long last_msg_time = 0;
 unsigned long brk_timer = 0;
 bool prev_dir = 0;
+bool emergency_stop = 0;
 
 float throttle_cmd;
 //float smt_Throttle;
@@ -77,10 +78,31 @@ float rev_to_fw(){
 
 }
 
+//failsafe for if we have no input- puts throttle to 0 and steering to a neutral place
+void failSafeActive(){
+  throttleServo.writeMicroseconds(1500);
+  steeringServo.writeMicroseconds(1850);
+}
+
 //main method for reading from ros
 void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
   //timestamp the  last ros message
   last_msg_time = millis();
+
+  //if emergency stop is triggered
+  if(control_msg.data[2] == 1.0)
+  {
+    emergency_stop = !emergency_stop;
+  }
+
+  //if emergency stop freeze the robot
+  if(emergency_stop)
+  {
+    failSafeActive();
+    servo_values[0] = 1850;
+    servo_values[1] = 1500;
+    return;
+  }
 
   //Handle for steering and throttle command
   //Map steering and throttle command to servo output
@@ -128,12 +150,6 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
 
   servo_values[1] = fmap(throttle_cmd, -1.0, 1.0, minSteering, maxSteering);
 
-}
-
-//failsafe for if we have no input- puts throttle to 0 and steering to a neutral place
-void failSafeActive(){
-  throttleServo.writeMicroseconds(1500);
-  steeringServo.writeMicroseconds(1850);
 }
 
 //Control message subscriber
