@@ -16,6 +16,8 @@ const int brk_delay = 500;
 //output pins on arduino
 static const int STEERING_OUT = 2;
 static const int THROTTLE_OUT = 3;
+static const int LIGHT_OUT = 4;
+static const int AUDIO_OUT = 5;
 
 //inputs from ros- 0 is steering 1 is throttle, rest are unused
 int servo_values[6];
@@ -96,6 +98,7 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     emergency_stop = !emergency_stop;
     last_emergency_stop = millis();
     //flip to 1 for water sensor shut off
+    //audio and sound out
   }
 
   //Handle for steering and throttle command
