@@ -99,6 +99,15 @@ void driveCallback( const std_msgs::Float32MultiArray&  control_msg ){
     last_emergency_stop = millis();
     //flip to 1 for water sensor shut off
     //audio and sound out
+    for(int i = 0; i < 3; i++)
+    {
+      digitalWrite(LIGHT_OUT, HIGH);
+      digitalWrite(AUDIO_OUT, HIGH);
+      delay(1000);
+      digitalWrite(LIGHT_OUT, LOW);
+      digitalWrite(AUDIO_OUT, LOW);
+      delay(1000);
+    }
   }
 
   //Handle for steering and throttle command
