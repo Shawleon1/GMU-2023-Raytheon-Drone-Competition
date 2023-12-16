@@ -40,15 +40,15 @@ if __name__ == '__main__':
         rate = rospy.Rate(10) # 10hz
         while not rospy.is_shutdown():
             #if we are close to the current target, move to the next target
-            if(abs(currPose[0] - targets[currTarget][0]) < 1 and abs(currPose[1] - targets[currTarget][1]) < 1):
-                currTarget = currTarget + 1
+            #if(abs(currPose[0] - targets[currTarget][0]) < 1 and abs(currPose[1] - targets[currTarget][1]) < 1):
+            #    currTarget = currTarget + 1
                 #end case
-                if(targets[currTarget] == [0, 0]):
-                    break
+            #    if(targets[currTarget] == [0, 0]):
+            #        break
 
             #calculate theta between robot and target
-            deltaX = target[currTarget][0] - currPose[0]
-            deltaY = target[currTarget][1] - currPose[1]
+            deltaX = targets[currTarget][0] - currPose[0]
+            deltaY = targets[currTarget][1] - currPose[1]
             angle = currPose[2] - math.tan(deltaX/deltaY)
 
             #pick steering
