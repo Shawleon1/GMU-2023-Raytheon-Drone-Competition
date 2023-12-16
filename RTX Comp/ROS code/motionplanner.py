@@ -49,7 +49,7 @@ if __name__ == '__main__':
             #calculate theta between robot and target
             deltaX = targets[currTarget][0] - currPose[0]
             deltaY = targets[currTarget][1] - currPose[1]
-            angle = currPose[2] - math.tan(deltaX/deltaY)
+            angle = currPose[2] - math.atan(deltaX/deltaY)
 
             #pick steering
             if(angle < -5):
