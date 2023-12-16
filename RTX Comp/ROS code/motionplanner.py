@@ -6,6 +6,7 @@
 import rospy
 import math
 from std_msgs.msg import Float32MultiArray
+from sensor_msgs.msg import Joy
 
 #current pose, to be fed by gps_callback in the future. x, y, degrees.
 currPose = [0, 0, 0]
